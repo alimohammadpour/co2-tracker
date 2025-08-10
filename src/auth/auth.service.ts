@@ -6,12 +6,15 @@ import * as bcrypt from 'bcrypt';
 import { LoginDto, ValidatedUserDto } from './auth.dto';
 import { CreateUserDto } from 'src/user/user.dto';
 import { UserService } from 'src/user/user.service';
+import { v4 as uuidv4 } from 'uuid';
+import { RedisBlocklistService } from './redis-blocklist.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService, 
-    private userService: UserService
+    private userService: UserService,
+    private blocklist: RedisBlocklistService,
   ) {}
 
   async register({ username, email, password }: CreateUserDto): Promise<ValidatedUserDto> {
@@ -40,9 +43,19 @@ export class AuthService {
   }
 
   async login({ id, username }: ValidatedUserDto) {
+    const jti = uuidv4();
     const payload = { username, sub: id };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, { jwtid: jti }),
     };
+  }
+
+  async logout({ jti, exp }: any) {
+    const now = Math.floor(Date.now() / 1000);
+    const ttl = exp - now;
+    if (ttl > 0) {
+      await this.blocklist.add(jti, ttl);
+    }
+    return { message: 'Logged out' };
   }
 }

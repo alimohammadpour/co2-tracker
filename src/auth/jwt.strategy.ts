@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
+import { RedisBlocklistService } from './redis-blocklist.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(configService: ConfigService) {
+  constructor(configService: ConfigService, private blocklist: RedisBlocklistService) {
     const secretOrKey = configService.get<string>('JWT_SECRET');
     if (!secretOrKey) {
         throw new Error('JWT_SECRET is missing');
@@ -18,6 +19,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+    const { jti } = payload;
+    if (!jti) {
+      throw new UnauthorizedException('Missing jti');
+    }
+    const blocked = await this.blocklist.isBlocked(jti);
+    if (blocked) {
+      throw new UnauthorizedException('Token has been revoked');
+    }
+
+    return { userId: payload.sub, username: payload.username, jti, exp: payload.exp };
   }
 }
