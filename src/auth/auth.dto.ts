@@ -10,3 +10,11 @@ export class LoginDto {
 }
 
 export type ValidatedUserDto = Omit<User, 'password'>;
+
+export class ResetPasswordDto {
+  @IsString()
+  token: string;
+
+  @IsString()
+  newPassword: string;
+}

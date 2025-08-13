@@ -1,6 +1,6 @@
 import { Controller, Post, Body, UnauthorizedException, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './auth.dto';
+import { LoginDto, ResetPasswordDto } from './auth.dto';
 import { CreateUserDto } from 'src/user/user.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
@@ -26,5 +26,15 @@ export class AuthController {
   @Post('logout')
   async logout(@Req() { user }: any) {
     return this.authService.logout(user);
+  }
+
+  @Post('request-password-reset')
+  async requestPasswordReset(@Body('email') email: string) {
+    return await this.authService.sendResetPasswordToken(email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return await this.authService.resetPassword(resetPasswordDto);
   }
 }

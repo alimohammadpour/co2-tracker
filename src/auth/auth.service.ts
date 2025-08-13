@@ -1,9 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { LoginDto, ValidatedUserDto } from './auth.dto';
+import { LoginDto, ResetPasswordDto, ValidatedUserDto } from './auth.dto';
 import { CreateUserDto } from 'src/user/user.dto';
 import { UserService } from 'src/user/user.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -50,12 +50,52 @@ export class AuthService {
     };
   }
 
-  async logout({ jti, exp }: any) {
+  private async addTokenToBlocklist({ jti, exp }: any): Promise<void> {
     const now = Math.floor(Date.now() / 1000);
     const ttl = exp - now;
     if (ttl > 0) {
       await this.blocklist.add(jti, ttl);
     }
+    return;
+  }
+
+  async logout(user: any) {
+    await this.addTokenToBlocklist(user)
     return { message: 'Logged out' };
+  }
+
+  async sendResetPasswordToken(email: string): Promise<void> {
+    // TODO: Implement sending reset link via email
+    // eg: const resetLink = 'https://yourappaddr/reset-password?token=';
+    const user = await this.userService.findOne({ where: { email } });
+    if (!user) return;
+    this.jwtService.sign({ sub: user.id }, { 
+      expiresIn: '5m',
+      jwtid: uuidv4(),
+    });
+  }
+
+  async resetPassword({ token, newPassword }: ResetPasswordDto): Promise<void> {
+    try {
+      const { 
+        sub: userId, jti, exp 
+      } = this.jwtService.verify(token);
+
+      const blocked = await this.blocklist.isBlocked(jti);
+      if (blocked) {
+        throw new UnauthorizedException('Token has been revoked');
+      }
+
+      const user = await this.userService.findOne({ where: { id: userId } });
+      if (!user) throw new NotFoundException('User not found');
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await this.userService.updatePassword(userId, hashedPassword);
+
+      await this.addTokenToBlocklist({ jti, exp });
+    } catch (error: unknown) {
+      if (error instanceof HttpException) throw error;
+      throw new BadRequestException('Invalid or expired token');
+    }
   }
 }
