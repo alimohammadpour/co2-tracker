@@ -4,11 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmModuleAsyncOptions } from 'configs/typeOrm.config';
 import { UsersModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
     AuthModule,
     UsersModule,
+    MailerModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

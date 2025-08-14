@@ -7,11 +7,13 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { RedisBlocklistService } from './redis-blocklist.service';
+import { MailerModule } from 'src/mailer/mailer.module';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
+    MailerModule,
     JwtModule.registerAsync(jwtModuleAsyncOptions()),
   ],
   controllers: [AuthController],

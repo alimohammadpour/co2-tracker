@@ -1,13 +1,12 @@
 import { BadRequestException, ConflictException, HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/user/user.entity';
-import { Repository, UpdateResult } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginDto, ResetPasswordDto, ValidatedUserDto } from './auth.dto';
 import { CreateUserDto } from 'src/user/user.dto';
 import { UserService } from 'src/user/user.service';
 import { v4 as uuidv4 } from 'uuid';
 import { RedisBlocklistService } from './redis-blocklist.service';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +14,7 @@ export class AuthService {
     private jwtService: JwtService, 
     private userService: UserService,
     private blocklist: RedisBlocklistService,
+    private mailerService: MailerService,
   ) {}
 
   async register({ username, email, password }: CreateUserDto): Promise<ValidatedUserDto> {
@@ -65,13 +65,16 @@ export class AuthService {
   }
 
   async sendResetPasswordToken(email: string): Promise<void> {
-    // TODO: Implement sending reset link via email
-    // eg: const resetLink = 'https://yourappaddr/reset-password?token=';
     const user = await this.userService.findOne({ where: { email } });
     if (!user) return;
-    this.jwtService.sign({ sub: user.id }, { 
+    const token = this.jwtService.sign({ sub: user.id }, { 
       expiresIn: '5m',
       jwtid: uuidv4(),
+    });
+
+    await this.mailerService.sendPasswordResetEmail({
+      email, 
+      resetLink: `https://example.com/reset-password?token=${token}` 
     });
   }
 
