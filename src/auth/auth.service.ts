@@ -16,6 +16,8 @@ import { RedisBlocklistService } from '../redis/redis-blocklist.service';
 import { InjectQueue } from '@nestjs/bull';
 import { MAILER_QUEUE } from '../mailer/mailer.constants';
 import { type Queue } from 'bull';
+import { ConfigService } from '@nestjs/config';
+import { resetLinkOptions } from 'configs/resetLink.config';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +25,7 @@ export class AuthService {
     private jwtService: JwtService, 
     private userService: UserService,
     private blocklist: RedisBlocklistService,
+    private configService: ConfigService,
     @InjectQueue(MAILER_QUEUE) private mailQueue: Queue,
   ) {}
 
@@ -76,14 +79,16 @@ export class AuthService {
   async sendResetPasswordToken(email: string): Promise<void> {
     const user = await this.userService.findOne({ where: { email } });
     if (!user) return;
+
+    const { expiresIn, resetLinkBaseUrl } = resetLinkOptions(this.configService);
     const token = this.jwtService.sign({ sub: user.id }, { 
-      expiresIn: '5m',
+      expiresIn,
       jwtid: uuidv4(),
     });
 
     await this.mailQueue.add({
       email,
-      resetLink: `https://example.com/reset-password?token=${token}`,
+      resetLink: `${resetLinkBaseUrl}?token=${token}`,
     });
   }
 
