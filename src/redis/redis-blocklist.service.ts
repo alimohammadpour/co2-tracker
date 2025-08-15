@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
+import { REDIS_CLIENT } from './redis.constants';
 
 @Injectable()
 export class RedisBlocklistService {
-  constructor(@Inject('REDIS_CLIENT') private readonly redis: Redis) {}
+  constructor(@Inject(REDIS_CLIENT) private readonly redis: Redis) {}
 
   async add(jti: string, ttlSeconds: number) {
     if (ttlSeconds <= 0) return;

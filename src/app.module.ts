@@ -6,6 +6,8 @@ import { UsersModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from './mailer/mailer.module';
 import { RedisModule } from './redis/redis.module';
+import { BullModule } from '@nestjs/bull';
+import { sharedBullAsyncConfig } from 'configs/queue.config';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { RedisModule } from './redis/redis.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleAsyncOptions()),
+    BullModule.forRootAsync(sharedBullAsyncConfig()),
   ]
 })
 export class AppModule {}

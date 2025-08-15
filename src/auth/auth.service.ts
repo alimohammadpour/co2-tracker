@@ -13,7 +13,9 @@ import { CreateUserDto } from 'src/user/user.dto';
 import { UserService } from 'src/user/user.service';
 import { v4 as uuidv4 } from 'uuid';
 import { RedisBlocklistService } from '../redis/redis-blocklist.service';
-import { MailerService } from 'src/mailer/mailer.service';
+import { InjectQueue } from '@nestjs/bull';
+import { MAILER_QUEUE } from '../mailer/mailer.constants';
+import { type Queue } from 'bull';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +23,7 @@ export class AuthService {
     private jwtService: JwtService, 
     private userService: UserService,
     private blocklist: RedisBlocklistService,
-    private mailerService: MailerService,
+    @InjectQueue(MAILER_QUEUE) private mailQueue: Queue,
   ) {}
 
   async register({ username, email, password }: CreateUserDto): Promise<ValidatedUserDto> {
@@ -79,9 +81,9 @@ export class AuthService {
       jwtid: uuidv4(),
     });
 
-    await this.mailerService.sendPasswordResetEmail({
-      email, 
-      resetLink: `https://example.com/reset-password?token=${token}` 
+    await this.mailQueue.add({
+      email,
+      resetLink: `https://example.com/reset-password?token=${token}`,
     });
   }
 
