@@ -1,11 +1,18 @@
-import { BadRequestException, ConflictException, HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { 
+  BadRequestException, 
+  ConflictException, 
+  HttpException, 
+  Injectable, 
+  NotFoundException, 
+  UnauthorizedException 
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginDto, ResetPasswordDto, ValidatedUserDto } from './auth.dto';
 import { CreateUserDto } from 'src/user/user.dto';
 import { UserService } from 'src/user/user.service';
 import { v4 as uuidv4 } from 'uuid';
-import { RedisBlocklistService } from './redis-blocklist.service';
+import { RedisBlocklistService } from '../redis/redis-blocklist.service';
 import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
