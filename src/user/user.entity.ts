@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Footprint } from '../footprint/footprint.entity';
 
 @Entity()
 export class User {
@@ -13,6 +14,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany(() => Footprint, footprint => footprint.user)
+  footprints: Footprint[];
 
   @CreateDateColumn()
   createdAt: Date;

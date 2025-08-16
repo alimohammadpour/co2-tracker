@@ -8,6 +8,9 @@ import { MailerModule } from './mailer/mailer.module';
 import { RedisModule } from './redis/redis.module';
 import { BullModule } from '@nestjs/bull';
 import { sharedBullAsyncConfig } from 'configs/queue.config';
+import { FootprintModule } from './footprint/footprint.module';
+import { CategoryModule } from './cateogries/categories.module';
+import databaseConfig from '../configs/database.config';
 
 @Module({
   imports: [
@@ -15,8 +18,11 @@ import { sharedBullAsyncConfig } from 'configs/queue.config';
     UsersModule,
     MailerModule,
     RedisModule,
+    CategoryModule,
+    FootprintModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [databaseConfig],
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleAsyncOptions()),
     BullModule.forRootAsync(sharedBullAsyncConfig()),

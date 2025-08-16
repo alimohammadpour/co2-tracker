@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "seed:run": "ts-node database/seeders/database.seeder.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
@@ -32,6 +33,7 @@
     "bcrypt": "^6.0.0",
     "bull": "^4.16.5",
     "class-validator": "^0.14.2",
+    "dotenv": "^17.2.1",
     "ioredis": "^5.7.0",
     "mysql2": "^3.14.3",
     "nodemailer": "^7.0.5",
