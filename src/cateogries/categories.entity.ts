@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { CategoriesEnum } from './enum/categories.enum';
 
-@Entity()
+@Entity('categories')
 export class Category {
   @PrimaryGeneratedColumn()
   id: string;

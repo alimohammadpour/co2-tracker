@@ -3,7 +3,7 @@ import { User } from '../user/user.entity';
 import { type FootprintDataDTO } from './dto/footprint-data.dto';
 import { Category } from '../cateogries/categories.entity';
 
-@Entity()
+@Entity('footprints')
 export class Footprint {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -17,6 +17,6 @@ export class Footprint {
   @Column({ type: 'json' })
   data: FootprintDataDTO;
 
-  @Column({ type: 'float', nullable: true })
-  carbon_kg?: number;
+  @Column({ type: 'float', nullable: true, name: 'co2e_kg' })
+  co2EKg?: number;
 }

@@ -11,6 +11,7 @@ import { sharedBullAsyncConfig } from 'configs/queue.config';
 import { FootprintModule } from './footprint/footprint.module';
 import { CategoryModule } from './cateogries/categories.module';
 import databaseConfig from '../configs/database.config';
+import { EmissionModule } from './emission/emission.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import databaseConfig from '../configs/database.config';
     RedisModule,
     CategoryModule,
     FootprintModule,
+    EmissionModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig],
