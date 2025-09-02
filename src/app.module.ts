@@ -9,9 +9,9 @@ import { RedisModule } from './redis/redis.module';
 import { BullModule } from '@nestjs/bull';
 import { sharedBullAsyncConfig } from 'configs/queue.config';
 import { FootprintModule } from './footprint/footprint.module';
-import { CategoryModule } from './cateogries/categories.module';
 import databaseConfig from '../configs/database.config';
 import { EmissionModule } from './emission/emission.module';
+import { ActivityModule } from './activity/activity.module';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { EmissionModule } from './emission/emission.module';
     UsersModule,
     MailerModule,
     RedisModule,
-    CategoryModule,
+    ActivityModule,
     FootprintModule,
     EmissionModule,
     ConfigModule.forRoot({

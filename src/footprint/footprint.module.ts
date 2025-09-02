@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Footprint } from './footprint.entity';
-import { Category } from '../cateogries/categories.entity';
 import { FootprintService } from './footprint.service';
+import { Category } from '../activity/entities/category.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Footprint, Category])],

@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from '../user/user.entity';
 import { type FootprintDataDTO } from './dto/footprint-data.dto';
-import { Category } from '../cateogries/categories.entity';
+import { Category } from '../activity/entities/category.entity';
 
 @Entity('footprints')
 export class Footprint {
