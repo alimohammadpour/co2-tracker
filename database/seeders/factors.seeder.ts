@@ -10,6 +10,7 @@ export const factorsSeeder = async () => {
 
   const factors: Partial<Factor>[] = [
     { 
+      id: 1,
       name: 'Natural gas', 
       description: 'Natural gas emissions', 
       category: categories.find(({ name }) => name == CategoryEnum.ENERGY) ,
@@ -17,5 +18,11 @@ export const factorsSeeder = async () => {
     },
   ];
 
-  await AppDataSource.getRepository(Factor).insert(factors);
+  await AppDataSource
+    .createQueryBuilder()
+    .insert()
+    .into(Factor)
+    .values(factors)
+    .orIgnore()
+    .execute();
 }

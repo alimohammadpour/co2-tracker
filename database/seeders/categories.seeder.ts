@@ -7,5 +7,11 @@ export const categorySeeder = async () => {
     { id: 1, name: CategoryEnum.ENERGY, description: 'Energy emissions' },
   ];
 
-  await AppDataSource.getRepository(Category).insert(categories);
+  await AppDataSource
+    .createQueryBuilder()
+    .insert()
+    .into(Category)
+    .values(categories)
+    .orIgnore()
+    .execute();
 }
