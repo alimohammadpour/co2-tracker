@@ -7,3 +7,7 @@ export type EmissionEstimateDataDto = {
   } 
   parameters: FootprintDataDTO;
 }
+
+export type RequestEmissionEstimateBodyDto = FootprintDataDTO & { 
+  activity: number; 
+}
