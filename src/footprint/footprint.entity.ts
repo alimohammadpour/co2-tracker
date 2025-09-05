@@ -1,7 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../user/user.entity';
 import { type FootprintDataDTO } from './dto/footprint-data.dto';
-import { Category } from '../activity/entities/category.entity';
+import { Factor } from '../activity/entities/factor.entity';
 
 @Entity('footprints')
 export class Footprint {
@@ -9,14 +9,16 @@ export class Footprint {
   id: string;
 
   @ManyToOne(() => User, (user) => user.footprints)
+  @JoinColumn({ name: 'user_id' })
   user: User;
   
-  @ManyToOne(() => Category, { nullable: false })
-  category: Category;
+  @ManyToOne(() => Factor, { nullable: false })
+  @JoinColumn({ name: 'factor_id' })
+  factor: Factor;
 
-  @Column({ type: 'json' })
+  @Column({ type: 'json', nullable: false })
   data: FootprintDataDTO;
 
-  @Column({ type: 'float', nullable: true, name: 'co2e_kg' })
-  co2EKg?: number;
+  @Column({ type: 'float', nullable: false, name: 'co2e_kg' })
+  co2EKg: number;
 }

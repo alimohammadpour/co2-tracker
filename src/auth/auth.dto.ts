@@ -1,4 +1,5 @@
 import { IsString } from 'class-validator';
+import { Request } from 'express';
 import { User } from 'src/user/user.entity';
 
 export class LoginDto {
@@ -17,4 +18,17 @@ export class ResetPasswordDto {
 
   @IsString()
   newPassword: string;
+}
+
+export type JWTAuthUserPayload = {
+  userId: number;
+  username: string;
+  jti: string;
+  exp: number;
+}
+
+export type AuthUserPayload = JWTAuthUserPayload;
+
+export interface AuthRequest extends Request {
+  user: AuthUserPayload;
 }

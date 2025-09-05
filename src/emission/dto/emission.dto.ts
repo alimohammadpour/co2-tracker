@@ -8,6 +8,7 @@ export type EmissionEstimateDataDto = {
   parameters: FootprintDataDTO;
 }
 
-export type RequestEmissionEstimateBodyDto = FootprintDataDTO & { 
-  activity: number; 
-}
+export type EstimateResponseDto = {
+  co2e: number;
+  [key: string]: any
+};

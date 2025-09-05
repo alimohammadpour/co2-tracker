@@ -5,7 +5,7 @@ import { AxiosRequestConfig } from 'axios';
 import { AxiosError } from 'axios';
 import { ClimatiqConfigType, getClimatiqConfig } from 'configs/climatiq.config';
 import { ProviderInterface } from './provider.interface';
-import { EmissionEstimateDataDto } from '../dto/emission.dto';
+import { EmissionEstimateDataDto, EstimateResponseDto } from '../dto/emission.dto';
 
 @Injectable()
 export class ClimatiqProvider implements ProviderInterface {
@@ -34,7 +34,7 @@ export class ClimatiqProvider implements ProviderInterface {
     };
   }
   
-  private async post<T>(url: string, emissionData: EmissionEstimateDataDto): Promise<T> {
+  private async post(url: string, emissionData: EmissionEstimateDataDto): Promise<EstimateResponseDto> {
     try {
       const { data } = await this.http.axiosRef.post(
         `${this.getBaseUrl()}/${url}`,
@@ -49,7 +49,7 @@ export class ClimatiqProvider implements ProviderInterface {
     }
   }
 
-  async estimate(estimateData: EmissionEstimateDataDto) {
+  async estimate(estimateData: EmissionEstimateDataDto): Promise<EstimateResponseDto> {
     return await this.post('estimate', estimateData);
   }
 }

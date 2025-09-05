@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { RedisBlocklistService } from '../redis/redis-blocklist.service';
+import { JWTAuthUserPayload } from './auth.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: any): Promise<JWTAuthUserPayload> {
     const { jti } = payload;
     if (!jti) {
       throw new UnauthorizedException('Missing jti');
