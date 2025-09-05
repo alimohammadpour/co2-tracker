@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 import { User } from '../user/user.entity';
 import { type FootprintDataDTO } from './dto/footprint-data.dto';
 import { Factor } from '../activity/entities/factor.entity';
@@ -21,4 +21,7 @@ export class Footprint {
 
   @Column({ type: 'float', nullable: false, name: 'co2e_kg' })
   co2EKg: number;
+
+  @CreateDateColumn({ name: 'created_at'})
+  createdAt: Date;
 }
