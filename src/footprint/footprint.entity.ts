@@ -5,8 +5,8 @@ import { Factor } from '../activity/entities/factor.entity';
 
 @Entity('footprints')
 export class Footprint {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @ManyToOne(() => User, (user) => user.footprints)
   @JoinColumn({ name: 'user_id' })

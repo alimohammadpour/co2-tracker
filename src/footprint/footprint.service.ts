@@ -25,4 +25,8 @@ export class FootprintService {
     const footprint = this.repository.create(createFootprintDto);
     return await this.repository.save(footprint);
   }
+
+  async find(userId: number): Promise<Footprint[]> {
+    return await this.repository.findUserWithFactors(userId);
+  }
 }
