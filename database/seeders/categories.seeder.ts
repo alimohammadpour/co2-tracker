@@ -5,6 +5,7 @@ import { Category } from "../../src/activity/entities/category.entity";
 export const categorySeeder = async () => {
   const categories: Partial<Category>[] = [
     { id: 1, name: CategoryEnum.ENERGY, description: 'Energy emissions' },
+    { id: 2, name: CategoryEnum.ENERGY, description: 'Energy emissions' },
   ];
 
   await AppDataSource
