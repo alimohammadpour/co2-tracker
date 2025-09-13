@@ -1,12 +1,19 @@
-import { EnergyUnitEnum } from "../enum/footprint-data.enum";
-import { User } from "../../user/user.entity";
+import { EnergyUnitEnum, VolumeUnitEnum, WeightUnitEnum } from "../enum/footprint-data.enum";
 
 export type EnergyEmissionData = {
   energy: number;
   energy_unit: EnergyUnitEnum;
 };
 
-export type FootprintDataDTO = EnergyEmissionData
+export type FoodEmissionData = {
+  weight: number,
+	weight_unit: WeightUnitEnum,
+} | {
+  volume: number,
+  volume_unit: VolumeUnitEnum,
+}
+
+export type FootprintDataDTO = EnergyEmissionData | FoodEmissionData;
 
 export type RequestEmissionEstimateBodyDto = FootprintDataDTO & { 
   activity: number; 
